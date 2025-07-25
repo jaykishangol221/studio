@@ -38,6 +38,8 @@ Also provide an accurate and concise summary of the event.
 Keywords: {{{keywords}}}
 
 Return the date and summary in JSON format.`,
+  model: googleAI('gemini-2.0-flash'),
+  tools: [googleAI.search],
 });
 
 const identifyHistoricalDateFlow = ai.defineFlow(
@@ -47,10 +49,7 @@ const identifyHistoricalDateFlow = ai.defineFlow(
     outputSchema: IdentifyHistoricalDateOutputSchema,
   },
   async input => {
-    const {output} = await identifyHistoricalDatePrompt(input, {
-      model: googleAI('gemini-2.0-flash'),
-      tools: [googleAI.search],
-    });
+    const {output} = await identifyHistoricalDatePrompt(input);
     return output!;
   }
 );
