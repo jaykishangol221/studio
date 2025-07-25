@@ -11,7 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {search} from '@genkit-ai/googleai';
+import {search} from '@genkit-ai/googleai/tools';
 
 const IdentifyHistoricalDateInputSchema = z.object({
   keywords: z.string().describe('Keywords related to the historical event.'),
