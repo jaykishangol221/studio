@@ -32,6 +32,7 @@ const identifyHistoricalDatePrompt = ai.definePrompt({
   name: 'identifyHistoricalDatePrompt',
   input: {schema: IdentifyHistoricalDateInputSchema},
   output: {schema: IdentifyHistoricalDateOutputSchema},
+  model: 'googleai/gemini-2.0-flash',
   tools: [googleAI.search],
   prompt: `You are a historian. Given the following keywords related to a historical event, use your knowledge and perform a web search to identify the single most relevant date associated with it. 
   
