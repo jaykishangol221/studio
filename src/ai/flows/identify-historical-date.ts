@@ -11,7 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {search} from '@genkit-ai/googleai/tools';
+import { googleAI } from '@genkit-ai/googleai';
 
 const IdentifyHistoricalDateInputSchema = z.object({
   keywords: z.string().describe('Keywords related to the historical event.'),
@@ -32,7 +32,7 @@ const identifyHistoricalDatePrompt = ai.definePrompt({
   name: 'identifyHistoricalDatePrompt',
   input: {schema: IdentifyHistoricalDateInputSchema},
   output: {schema: IdentifyHistoricalDateOutputSchema},
-  tools: [search],
+  tools: [googleAI.search],
   prompt: `You are a historian. Given the following keywords related to a historical event, use your knowledge and perform a web search to identify the single most relevant date associated with it. 
   
 Also provide an accurate and concise summary of the event.
