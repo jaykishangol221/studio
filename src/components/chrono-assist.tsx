@@ -7,7 +7,6 @@ import * as z from 'zod';
 import { Loader2, CalendarClock, BookText, AlertTriangle } from 'lucide-react';
 
 import { identifyHistoricalDate } from '@/ai/flows/identify-historical-date';
-import { summarizeHistoricalInfo } from '@/ai/flows/summarize-historical-info';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -26,7 +25,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -36,16 +34,12 @@ const formSchema = z.object({
   }),
 });
 
-type SearchMode = 'summary' | 'date';
-
 interface Result {
-  summary?: string;
-  date?: string;
-  dateSummary?: string;
+  date: string;
+  summary: string;
 }
 
 export default function ChronoAssist() {
-  const [searchMode, setSearchMode] = useState<SearchMode>('summary');
   const [result, setResult] = useState<Result | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,17 +57,10 @@ export default function ChronoAssist() {
     setError(null);
 
     try {
-      if (searchMode === 'summary') {
-        const response = await summarizeHistoricalInfo({
-          keywords: values.keywords,
-        });
-        setResult({ summary: response.summary });
-      } else {
-        const response = await identifyHistoricalDate({
-          keywords: values.keywords,
-        });
-        setResult({ date: response.date, dateSummary: response.summary });
-      }
+      const response = await identifyHistoricalDate({
+        keywords: values.keywords,
+      });
+      setResult({ date: response.date, summary: response.summary! });
     } catch (e) {
       setError('An error occurred while fetching information. Please try again.');
       console.error(e);
@@ -88,20 +75,10 @@ export default function ChronoAssist() {
         <CardHeader>
           <CardTitle>Start Your Search</CardTitle>
           <CardDescription>
-            Select a search mode and enter your keywords.
+            Enter keywords to find a historical date and summary.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs
-            defaultValue="summary"
-            className="w-full mb-6"
-            onValueChange={(value) => setSearchMode(value as SearchMode)}
-          >
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="summary">Summary</TabsTrigger>
-              <TabsTrigger value="date">Date</TabsTrigger>
-            </TabsList>
-          </Tabs>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -112,11 +89,7 @@ export default function ChronoAssist() {
                     <FormLabel>Keywords</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder={
-                          searchMode === 'summary'
-                            ? 'e.g., "The Renaissance"'
-                            : 'e.g., "First moon landing"'
-                        }
+                        placeholder='e.g., "First moon landing"'
                         {...field}
                       />
                     </FormControl>
@@ -162,50 +135,30 @@ export default function ChronoAssist() {
 
       {result && !isLoading && (
         <Card className="shadow-lg animate-in fade-in-50">
-          {result.summary && (
-            <>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CalendarClock className="text-primary" />
+              {result.date}
+            </CardTitle>
+            <CardDescription>
+              The most relevant date and a summary of the event.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+              <div>
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <BookText className="text-primary" />
                   Historical Summary
-                </CardTitle>
-                <CardDescription>
-                  A concise overview based on your keywords.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </h4>
                 <p className="text-foreground/90 leading-relaxed">
                   {result.summary}
                 </p>
-              </CardContent>
-            </>
-          )}
-          {result.date && (
-            <>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CalendarClock className="text-primary" />
-                  Identified Date
-                </CardTitle>
-                <CardDescription>
-                  The most relevant date found for your keywords.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-2xl font-bold text-primary">{result.date}</p>
-                {result.dateSummary && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Event Summary</h4>
-                    <p className="text-foreground/90 leading-relaxed">
-                      {result.dateSummary}
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </>
-          )}
+              </div>
+          </CardContent>
         </Card>
       )}
     </div>
   );
 }
+
+    

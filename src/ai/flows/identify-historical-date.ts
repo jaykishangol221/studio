@@ -2,9 +2,9 @@
 'use server';
 
 /**
- * @fileOverview Identifies a relevant historical date based on user-provided keywords.
+ * @fileOverview Identifies a relevant historical date and provides a summary based on user-provided keywords.
  *
- * - identifyHistoricalDate - A function that takes keywords and returns the most relevant date.
+ * - identifyHistoricalDate - A function that takes keywords and returns the most relevant date and a summary.
  * - IdentifyHistoricalDateInput - The input type for the identifyHistoricalDate function.
  * - IdentifyHistoricalDateOutput - The return type for the identifyHistoricalDate function.
  */
@@ -31,7 +31,9 @@ const identifyHistoricalDatePrompt = ai.definePrompt({
   name: 'identifyHistoricalDatePrompt',
   input: {schema: IdentifyHistoricalDateInputSchema},
   output: {schema: IdentifyHistoricalDateOutputSchema},
-  prompt: `You are a historian. Given the following keywords related to a historical event, identify the single most relevant date associated with it. If you cannot identify a specific date, provide your best estimate. Also provide a short summary of the event.
+  prompt: `You are a historian. Given the following keywords related to a historical event, use your knowledge and perform a web search to identify the single most relevant date associated with it. 
+  
+Also provide an accurate and concise summary of the event.
 
 Keywords: {{{keywords}}}
 
@@ -49,3 +51,5 @@ const identifyHistoricalDateFlow = ai.defineFlow(
     return output!;
   }
 );
+
+    

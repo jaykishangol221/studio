@@ -13,16 +13,18 @@ export default function Home() {
             ChronoAIssist
           </h1>
           <p className="mt-3 text-lg text-muted-foreground max-w-xl mx-auto">
-            Your AI-powered chronicle search assistant. Uncover historical summaries or pinpoint specific dates with ease.
+            Your AI-powered chronicle search assistant. Uncover historical summaries and pinpoint specific dates with ease.
           </p>
         </header>
         <main>
           <ChronoAssist />
         </main>
         <footer className="text-center mt-12 text-sm text-muted-foreground">
-            <p>Powered by Google's Gemini and Web Search.</p>
+            <p>Powered by Google's Gemini.</p>
         </footer>
       </div>
     </div>
   );
 }
+
+    
